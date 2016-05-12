@@ -1,0 +1,20 @@
+<section ng-controller="InventoryItemsController" ng-init="find()">
+  <div class="page-header">
+    <h1>Inventory Items</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="inventoryItem in inventoryItems" ui-sref="inventoryItems.view({inventoryItemId: inventoryItem.id})" class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="inventoryItem.created | date:'mediumDate'"></span>
+        by
+        <span ng-bind="inventoryItem.user.username"></span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="inventoryItem.itemName"></h4>
+      <p class="list-group-item-text" ng-bind="inventoryItem.itemQuantity"></p>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="!inventoryItems.length">
+    No inventory items yet, why don't you <a ui-sref="inventoryItems.create">create one</a>?
+  </div>
+</section>

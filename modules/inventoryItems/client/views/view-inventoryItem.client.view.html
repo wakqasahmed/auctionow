@@ -1,0 +1,22 @@
+<section ng-controller="InventoryItemsController" ng-init="findOne()">
+  <div class="page-header">
+    <h1 ng-bind="inventoryItem.itemName"></h1>
+  </div>
+  <div class="pull-right" ng-show="authentication.user.id == inventoryItem.user.id || (authentication.user.roles.indexOf('admin') && authentication.user.roles.indexOf('admin') != -1) ">
+    <a class="btn btn-primary" ui-sref="inventoryItems.edit({inventoryItemId: inventoryItem.id})">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn btn-primary" ng-click="remove(inventoryItem);">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <small>
+    <em class="text-muted">
+      Posted on
+      <span ng-bind="inventoryItem.created | date:'mediumDate'"></span>
+      by
+      <span ng-bind="inventoryItem.user.username"></span>
+    </em>
+  </small>
+  <p class="lead" ng-bind="inventoryItem.itemQuantity"></p>
+</section>

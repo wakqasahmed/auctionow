@@ -1,0 +1,30 @@
+<section ng-controller="InventoryItemsController" ng-init="findOne()">
+  <div class="page-header">
+    <h1>Edit Inventory Item</h1>
+  </div>
+  <div class="col-md-12">
+    <form name="inventoryItemForm" class="form-horizontal" ng-submit="update(inventoryItemForm.$valid)" novalidate>
+      <fieldset>
+        <div class="form-group" show-errors>
+          <label for="itemName">Item Name</label>
+          <input name="itemName" type="text" ng-model="inventoryItem.itemName" id="itemName" class="form-control" placeholder="Item Name" required>
+          <div ng-messages="inventoryItemForm.title.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Inventory Item Name is required.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="itemQuantity">Item Quantity</label>
+          <input type="number" name="itemQuantity" ng-model="inventoryItem.itemQuantity" id="itemQuantity" class="form-control" placeholder="1" />
+          <!--
+          <textarea name="content" ng-model="article.content" id="content" class="form-control" cols="30" rows="10" placeholder="Content"></textarea>-->
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Update" class="btn btn-default">
+        </div>
+        <div ng-show="error" class="text-center alert alert-danger">
+          <strong ng-bind="error"></strong>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</section>

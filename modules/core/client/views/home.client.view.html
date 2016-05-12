@@ -1,0 +1,461 @@
+<section ng-controller="HomeController">
+  <div class="jumbotron text-center">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12">
+        <img ng-src="http://techtrial.crossover.com/assets/images/logo_white_transparent.gif" alt="Crossover Tech Trial" class="img-responsive text-center" />
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <p class="lead">AuctioNow (The Auction System) - Online Real-time Multiplayer Game</p>
+    </div>
+    <div class="row">
+      <p>
+        <a class="btn btn-primary btn-lg" href="/inventoryItems">Check Inventory Items</a>
+        <a class="btn btn-success btn-lg" href="/inventoryItems/create">Add New Item</a>
+        <a class="btn btn-danger btn-lg" href="/api/auth/signout" target="_self">Sign Out</a>
+      </p>
+    </div>
+  </div>
+  <div>
+    <hr />
+    <div class="row">
+      <h2 class="text-center">Hey, you can start bidding on current auction OR put your item(s) for auction</h2>
+    </div>
+</div></section>
+
+<section>
+  <hr />
+  <div class="row">
+    <div class="col-md-4">
+      <article ng-controller="HomeController">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title text-center"><i class="glyphicon glyphicon-stats pull-left"></i>Player Stats<a href="/api/auth/signout" target="_self"><i class="fa fa-power-off pull-right"></i></a></h3>
+              </div>
+              <div class="panel-body">
+                Username: <strong>{{ authentication.user.username }}</strong><br>
+                Coins: <strong>{{ authentication.user.coinsBalance }}</strong>
+              </div>
+            </div>  
+          </div>
+        </div>
+      </article>
+
+      <article ng-controller="InventoryItemsController" ng-init="find()">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title"><i class="fa fa-archive"></i> &nbsp;My Inventory</h3>
+            </div>
+            <div class="panel-body">
+              <div ng-repeat="item in inventoryItems">
+                <div class="row">
+                  <div class="col-md-4 text-center">
+                    <img src="http://placehold.it/50x50" alt="{{item.itemName}}" />
+                    <h4>{{item.itemName}}</h4>
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <h4>Quantity</h4>
+                    {{item.itemQuantity}}
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <a ng-click="open(item)" style="cursor: pointer"><i style="font-size: 3em" class="fa fa-bullhorn"></i></a>                                  
+                    <button class="btn btn-primary" ng-click="open(item)">Auction</button>                
+                  </div>              
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>  
+        </div>
+        </div>
+
+        <script type="text/ng-template" id="createAuctionModal.html">
+            <div class="modal-header">
+                <h3 class="modal-title">Add {{selectedItem.itemName}} To Auction</h3>
+            </div>
+
+            <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+            <form name="auctionForm" class="form-horizontal" ng-submit="startAuction(auctionForm.$valid)" novalidate>
+              <fieldset>
+                <div class="modal-body">
+                <div class="form-group" show-errors>
+                  <label for="quantity">Quantity</label>
+                  <input name="quantity" type="number" ng-model="quantity" id="quantity" class="form-control" placeholder="1" max="{{selectedItem.itemQuantity}}" min="1" required>
+                  <div ng-messages="auctionForm.quantity.$error" role="alert">
+                    <p class="help-block error-text" ng-message="required">Item Quantity is required.</p>
+                  </div>
+                  <div ng-messages="auctionForm.quantity.$error" role="alert">
+                    <p class="help-block error-text" ng-message="max">Valid Item Quantity is required.</p>
+                  </div>                  
+                </div>
+                <div class="form-group" show-errors>
+                  <label for="minBidAmount">Min. Bid Amount</label>
+                  <input name="minBidAmount" type="number" ng-model="minBidAmount" id="minBidAmount" class="form-control" placeholder="1" min="1" required>
+                  <div ng-messages="auctionForm.minBidAmount.$error" role="alert">
+                    <p class="help-block error-text" ng-message="required">Minimum Bid Amount is required.</p>
+                  </div>                  
+                </div>
+                </div>
+
+                <div class="modal-footer">
+                <div class="form-group">
+                  <input type="submit" class="btn btn-primary" value="Start">
+                  <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>                  
+                </div>
+                <div ng-show="error" class="text-center alert alert-danger">
+                  <strong ng-bind="error"></strong>
+                </div>
+                </div>
+              </fieldset>            
+            <!--
+            <div class="modal-body">
+                <b>Quantity:</b> <input type="number" max="{{selectedItem.itemQuantity}}" min="1" required><br>
+                <b>Min. Bid Amount:</b> <input type="number" min="1" required> 
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button">Start</button>
+                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+            </div>-->
+            </form>
+            </div></div>
+        </script>        
+      </article>
+
+    </div>
+    <div class="col-md-8">
+
+      <article ng-controller="AuctionController">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-gavel"></i> &nbsp;Current Auction</h3>
+        </div>
+        <div class="panel-body" ng-show="currentAuctionItem == null || equals({}, currentAuctionItem)">
+          <h3>Sorry, No item in the Auction Block.<br>
+          Why don't you add one?<br><br>
+
+          You can use your inventory to sell items in Auction.
+          </h3>
+        </div>
+        <div class="panel-body" ng-show="currentAuctionItem != null && !equals({}, currentAuctionItem) && currentAuctionItem.winningBidAmount">
+          <div class="text-center">
+            <h3>Seller Name: <strong>{{currentAuctionItem.sellerName}}</strong></h3><br>
+            <div class="row">
+              <div class="col-md-6 text-right">
+                <img src="http://placehold.it/100x100" /><br>
+                <h3>{{currentAuctionItem.itemName}}</h3>
+              </div>
+              <div class="col-md-6 text-left">
+                <h3>Quantity<br>
+                {{currentAuctionItem.quantity}}</h3>
+              </div>              
+            </div>
+            <div id="timeLeft"><h2>Time left:
+              <timer autostart="false" countdown="currentAuctionItem.countdownVal" interval="1000" max-time-unit="'second'" finish-callback="endAuction()">{{seconds}} second{{secondsS}}</timer></h2>
+            </div>
+            <div><h3 ng-show="currentAuctionItem.winningBidAmount === currentAuctionItem.minBidAmount">Minimum Bid: </h3><h3 ng-show="currentAuctionItem.winningBidAmount > currentAuctionItem.minBidAmount">Winning Bid: </h3>
+            <h3><strong>{{currentAuctionItem.winningBidAmount}}</strong></h3></div><br>
+            
+            <div class="row">
+              <div class="col-sm-8 col-sm-offset-2">
+                <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title"><i class="fa fa-gavel"></i> &nbsp;Bid Now</h3>
+                        </div>
+                        <div class="panel-body">
+
+
+                <form name="bidForm" ng-submit="placeBid(bidForm.$valid)" novalidate>
+                  <fieldset>
+
+                    <div class="form-group" show-errors>
+                      <label for="newBidAmount">Bid Amount</label>
+                      <input name="newBidAmount" type="number" ng-model="newBidAmount" id="newBidAmount" class="form-control" placeholder="{{currentAuctionItem.winningBidAmount}}" min="{{currentAuctionItem.winningBidAmount}}" max="{{authentication.user.coinsBalance}}" required>
+                      <div ng-messages="bidForm.newBidAmount.$error" role="alert">
+                        <p class="help-block error-text" ng-message="required">Bid Amount is required.</p>
+                      </div>
+                      <div ng-messages="bidForm.newBidAmount.$error" role="alert">
+                        <p class="help-block error-text" ng-message="max">Insufficient coins.</p>
+                      </div>                                    
+                    </div>
+
+                    <div class="form-group">
+                      <button class="btn btn-success" type="submit"><i class="fa fa-money"></i> Place Bid</button>                  
+                    </div>
+                    <div ng-show="error" class="text-center alert alert-danger">
+                      <strong ng-bind="error"></strong>
+                    </div>
+
+                  </fieldset> 
+                  </form>
+
+
+
+                          <!--<input type="number" min="{{currentAuctionItem.winningBidAmount}}" ng-model="newBidAmount"></input><br>
+                          <button ng-click="placeBid()"><i class="fa fa-money"></i> Place Bid</button>-->
+                        </div>
+                </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section>
+   <hr />
+   <div class="assignment">
+      <b></b>
+      <p dir="ltr"><img src="http://techtrial.crossover.com/assets/images/logo_white_transparent.gif"><br></p>
+      <br>
+      <p dir="ltr"><span>Congratulations on making it to this stage of the evaluation. &nbsp;You are obviously very talented as very few people make it to this stage. &nbsp;As we’ve stated earlier, the companies we represent receive 1000s of resumes for any given role and it is through these difficult assignments where you can differentiate yourself and be noticed. &nbsp;After completion of this final ‘real scenario’ assignment - there will be a quick technical interview on your delivery then you are ready to be hired.</span></p>
+      <br>
+      <p dir="ltr"><span>The project is scoped to be simple and reasonable in size to enable you to demonstrate your enterprise - class skills. Though this is a fictitious example, this scenario is very similar to what you may encounter in your job. </span></p>
+      <p dir="ltr"><span><span class="Apple-tab-span"></span></span><span> </span><span><span class="Apple-tab-span"></span></span><span> </span><span><span class="Apple-tab-span"></span></span></p>
+      <p dir="ltr"><span>Technical Trial Objective</span></p>
+      <br>
+      <p dir="ltr"><span>You are being asked by a customer to implement the first feature for his new online real-time multiplayer game: the </span><span>auction</span><span> system. Any player is eligible to start a new auction at any moment, specifying an item from their inventory, a quantity, and a minimum bid value. The other players may place their bids during the auction time. When the time is over, the highest placed bid wins: the bid value in coins and the auctioned items are exchanged between the players.</span></p>
+      <br>
+      <h1><span>Functional Requirements </span></h1>
+      <br>
+      <p dir="ltr"><span>Create a single page web application with the following requirements:</span></p>
+      <br>
+      <ol>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>When the player user first reaches the website, a form is displayed, containing a single input field (the user name), and an “Enter” button.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>If this is a new user, it shall be immediately created and logged in. A new player starts with a balance of 1000 coins, and at the inventory: 30 breads, 18 carrots and 1 diamond.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span class="checklist-item-done">If this is an existing user, it shall be logged in.</span> <span>If this same user is considered to be currently logged in at another browser or tab, it must be immediately logged out from that other instance.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>We do not need password authentication now. (At this stage, we are not worried about securing a user account; the focus is in the real-time auction system.)</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>Once logged in, the user shall see at least three widgets: “</span><span><i>Player Stats</i></span><span>”, “</span><span><i>Inventory</i></span><span>” and “</span><span><i>Current Auction</i></span><span>” (check sample sketch image below).</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>The “</span><span><i>Player Stats</i></span><span>” widget must show the logged in user name and the current amount of coins, as well as a “Leave” (logout) link or button.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span class="checklist-item-done">The “</span><span class="checklist-item-done"><i>Inventory</i></span><span class="checklist-item-done">” widget must show a list of the user’s items. For each item, display the item image (an icon or thumbnail), the item name </span><span>(can be a legend or a tooltip on hover of the image)</span><span class="checklist-item-done">, the item quantity (integer amount), and a link or button to start an auction for that item.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>When an item’s start auction button is clicked, a dialog form appears. There are two inputs: quantity and minimum bid value. And two buttons: “Start Auction” and “Cancel”. The quantity can’t be greater than the available item quantity.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span class="checklist-item-done">When the “Start Auction” button is clicked, if there is currently another auction in progress, either an error message should be returned (fine for a 1st version of the app) </span><span>or the auction should be queued to start after the completion of current auction (preferable).</span> <span class="checklist-item-done">In all cases, the user shall be notified about success or failure of the operation.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>The “Current Auction” widget must show a message saying “No auction at the moment.” if there is no auction currently in progress. Otherwise, it must show the seller name, the item name and image, as well as the quantity being sold.</span><span><br class="kix-line-break"></span><span>It must also show the “Time left” (in seconds) to end the auction. All auctions start with a duration of 90 seconds. When a bid is made and there are less than 10 seconds remaining, the time left shall raise up again to 10 seconds (ie, it will pass a minimum of 10 seconds after the last bid until an auction is closed).</span><span><br class="kix-line-break"></span><span>It must also show the “Minimum bid:”, with the value specified the seller. After the first bid is placed, this should change to “Winning bid:”, with the value specified by the bidder.</span><span><br class="kix-line-break"></span><span>Finally, an input for placing “Your bid:” value, and a button to “Place bid”. The bid value must always be higher than the current winning bid, or at least equal to the minimum bid. A notification about the success or failure of the operation must be provided after a bid submission.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>When an auction reaches its end (no time left), the results (winning bid and the name of the user who placed it) are shown for a while (10 seconds), before a new auction is allowed to begin.</span><span><br class="kix-line-break"></span><span>Also, both the seller and the buyer balances of coins, and their inventories, are properly updated according to the result of the auction.</span></p>
+         </li>
+      </ol>
+      <br>
+      <p dir="ltr"><span><img src="https://lh4.googleusercontent.com/R5dPHbCWzo_jVZAvnC1T1Sz1Tmd5eYj5SgOybYwqtmktK35WqLfUHGasFDOlO8yeyqHWlFCLyHeww7-4JK6vq4WMiQL703G_IX6-QoYTvqJQuajg64CHZYYcdsGB_0cXORTta_M-" width="624px;" height="435px;" alt="tt-angular-node.png"></span></p>
+      <p dir="ltr"><span>The provided wireframe sketch is a reference for the functional requirements explanations. The importance of the wireframe is to show some of the required data to be displayed, and to help the understanding of what is being requested. You may follow the wireframe for you user interface, or ignore it completely, or anything in-between – it is up to you.</span></p>
+      <br>
+      <p dir="ltr"><span>The most important piece of functionality is the auction bidding process, and the corresponding changes in inventory and coins for both seller and buyer when an auction ends.</span></p>
+      <br>
+      <p dir="ltr"><span>Assume any other functionality required to achieve the above requirements based on logic and your experience.</span></p>
+      <br>
+      <h1><span>Other Technical and Non-functional Requirements</span></h1>
+      <h2><span><span class="Apple-tab-span"></span></span><span>Mandatory:</span></h2>
+      <ol>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>Three-way binding (View &gt; Model &gt; Database).</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Each one of the three mentioned widgets must be implemented as an AngularJS directive.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>Use NodeJS + Express for the back-end.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>Apply input validations and constraints wherever necessary to create a stable application.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>All users data should persist when the application is shut down and available when restarted.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>Your datastores should be any SQL based variation RDS (MySQL, SQL Server, Sqlite, Postgres).</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>Even if you are not able to complete all the tasks, try to achieve a working application.</span></p>
+         </li>
+      </ol>
+      <br>
+      <p dir="ltr" class="checklist-item-done"><span>You are free to choose the protocol between front and back end (HTTP, web sockets).</span></p>
+      <p dir="ltr"><span class="checklist-item-done"><font color="#ff0000">Failing to use AngularJs &amp; NodeJS&nbsp;will invalidate your submission and you will not be evaluated.</font><br></span></p>
+      <h2><span>Bonus Points:</span></h2>
+      <ol>
+         <li dir="ltr">
+            <p dir="ltr"><span>All code should be commented using JSDoc format.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr" class="checklist-item-done"><span>All code should adhere to appropriate JSHint standards.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Business logic should be unit tested under the Mocha framework.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Non-UI routes should be end-to-end tested under the Mocha framework.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Use Material Design style for the UI.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Create a Docker container for the application (include a Dockerfile).</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Add missing requirements to the implementation, according to your experience.</span></p>
+         </li>
+      </ol>
+      <br>
+      <h1><span>What we will evaluate</span></h1>
+      <br>
+      <ol>
+         <li dir="ltr">
+            <p dir="ltr"><span>Efficacy of your submission: fundamentally how well your solution is able to achieve the assignment objective and solve the stated problem.</span></p>
+         </li>
+         <ol>
+            <li dir="ltr">
+               <p dir="ltr"><span>Code quality</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Code modularity</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Application organization across files and within each file - please ensure you follow the framework standards</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Code documentation - balancing between self documenting code and comments</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Unit testing</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Exception handling where available and expected in the frameworks you’re using</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>For any technology used, the correct usage of that technology based on consecrated best practices.</span></p>
+            </li>
+         </ol>
+         <li dir="ltr">
+            <p dir="ltr"><span>Technical</span></p>
+         </li>
+         <ol>
+            <li dir="ltr">
+               <p dir="ltr"><span>Clarity and completeness of the readme and design document </span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Functional and non-functional requirements completeness (including bonus)</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Efficiency of communication flows between frontend and backend</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Choice of 3rd party technologies, if applicable</span></p>
+            </li>
+         </ol>
+         <li dir="ltr">
+            <p dir="ltr"><span>User experience</span></p>
+         </li>
+         <ol>
+            <li dir="ltr">
+               <p dir="ltr"><span>Functional completeness</span></p>
+            </li>
+            <li dir="ltr">
+               <p dir="ltr"><span>Usability</span></p>
+            </li>
+         </ol>
+      </ol>
+      <br>
+      <h1><span>What to deliver</span></h1>
+      <h2><span>Demonstration Video</span></h2>
+      <p dir="ltr"><span>Record a video demonstration of your work using a screencast tool like </span><a><span>screen-o-matic </span></a><span>(or any other tool you prefer) commenting on the execution of all components. Save the video to your local machine and include it with the delivery package.</span></p>
+      <h2><span>Database script </span></h2>
+      <p dir="ltr"><span>Create manual steps and/or SQL script files to create the databases, their schema, stored procedures and any initial data you may use for testing.</span></p>
+      <h2><span>Readme Document</span></h2>
+      <p dir="ltr"><span>Create a txt file with the following information</span></p>
+      <ol>
+         <li dir="ltr">
+            <p dir="ltr"><span>Instructions to install and configure prerequisites or dependencies, if any</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Instructions to create and initialize the database</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Assumptions you have made - it is good to explain your thought process and the assumptions you have made</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Requirements that you have not covered in your submission, if any</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Instructions to configure and prepare the source code to build and run properly</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Instructions to prepare and run the test suites</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Issues you have faced while completing the assignment, if any</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Constructive feedback for improving the assignment</span></p>
+         </li>
+      </ol>
+      <h2><span>Design Document</span></h2>
+      <p dir="ltr"><span>Create a design document containing the following</span></p>
+      <ol>
+         <li dir="ltr">
+            <p dir="ltr"><span>List of technologies and design patterns used</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>High level presentation of the data model </span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Diagrams describing the composition and working of the system, or explaining the component interaction or process, control and data flows. (At least one diagram. A few more is better.)</span><span> </span></p>
+         </li>
+      </ol>
+      <h2><span>Source Code</span></h2>
+      <p dir="ltr"><span>You should deliver the implemented source code including any dependencies. For the dependencies that could not be included due to size, the readme file should have proper instructions on how to download and install them.</span></p>
+      <br>
+      <h1><span>What to submit</span></h1>
+      <br>
+      <p dir="ltr"><span><b>Please read this section carefully.</b></span></p>
+      <p dir="ltr"><span><b>Failing to follow these directions will disqualify you from consideration.</b></span></p>
+      <br>
+      <p dir="ltr"><span>You will be submitting your deliverable through the Crossover Candidate Portal. &nbsp;The delivery for this assignment should consist of a zip file named</span><span> &lt;your_name&gt;.zip</span><span> containing the following:</span></p>
+      <ul>
+         <li dir="ltr">
+            <p dir="ltr"><span>README.txt</span><span> </span><span>→</span><span> containing report about work done and how to run your application.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Design</span><span> </span><span>→</span><span> folder containing application functional and architectural design (PDF, ODT or DOC)</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Video</span><span> </span><span>→</span><span> folder containing video demonstration of your solution recorded via some screen capturing tool and encoded in popular video format (mp4 preferred). &nbsp;Please ensure the size of the video is less than 30MB. &nbsp;If not - we suggest you reduce the size of the demo by removing similar frames and/or removing binary dependencies.</span></p>
+         </li>
+         <li dir="ltr">
+            <p dir="ltr"><span>Code</span><span> </span><span>→</span><span> folder containing your code.</span></p>
+         </li>
+      </ul>
+      <p><span>ATTENTION! YOUR APPLICATION WILL BE REJECTED IF IT:</span></p>
+      <div class="wiki-content">- Does not compile</div>
+      <div class="wiki-content">- Does not contain unit tests</div>
+      <div class="wiki-content">- Unit tests are failing</div>
+      <br><br>
+   </div>
+</section>
