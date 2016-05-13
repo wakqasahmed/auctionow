@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 var path = require('path'),
-  inventoryItemsPolicy = require('../policies/inventoryItems.server.policy'),
+  inventoryItemsPolicy = require(path.resolve('./modules/inventoryItems/server/policies/inventoryItems.server.policy')),
   inventoryItems = require(path.resolve('./modules/inventoryItems/server/controllers/inventoryItems.server.controller'));
 
 
