@@ -12,7 +12,7 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
   }
 ]);
 
-angular.module(ApplicationConfiguration.applicationModuleName).run(function($rootScope, $state, Authentication) {
+angular.module(ApplicationConfiguration.applicationModuleName).run(['$rootScope', '$state', 'Authentication', function($rootScope, $state, Authentication) {
 
   // Check authentication before changing state
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
@@ -49,7 +49,7 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function($roo
       };
     }
   });
-});
+}]);
 
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
