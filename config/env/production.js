@@ -6,21 +6,21 @@ module.exports = {
     privateKey: './config/sslcerts/key.pem',
     certificate: './config/sslcerts/cert.pem'
   },
-  port: process.env.PORT || 8443,
+  port: process.env.PORT || OPENSHIFT_NODEJS_PORT || 8443,
   db: {
     name: process.env.DB_NAME || "seanjs_dev",
-    host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT || 5432,
-    username: process.env.DB_USERNAME || "postgres",
-    password: process.env.DB_PASSWORD || "postgres",
+    host: process.env.DB_HOST || process.env.OPENSHIFT_POSTGRESQL_DB_HOST || "localhost",
+    port: process.env.DB_PORT || process.env.OPENSHIFT_POSTGRESQL_DB_PORT || 5432,
+    username: process.env.DB_USERNAME || process.env.OPENSHIFT_POSTGRESQL_DB_USERNAME || "postgres",
+    password: process.env.DB_PASSWORD || process.env.OPENSHIFT_POSTGRESQL_DB_PASSWORD || "postgres",
     dialect: process.env.DB_DIALECT || "postgres", //mysql, postgres, sqlite3,...
     enableSequelizeLog: process.env.DB_LOG || false,
     ssl: process.env.DB_SSL || false,
     sync: process.env.DB_SYNC || false //Synchronizing any model changes with database
   },
   redis: {
-    host: process.env.REDIS_HOST || "localhost",
-    port: process.env.REDIS_PORT || 6379,
+    host: process.env.REDIS_HOST || process.env.OPENSHIFT_REDIS_HOST || "localhost",
+    port: process.env.REDIS_PORT || process.env.OPENSHIFT_REDIS_PORT || 6379,
     database: parseInt(process.env.REDIS_DATABASE) || 0,
     password: process.env.REDIS_PASSWORD || "",
   },
