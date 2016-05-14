@@ -22,7 +22,7 @@ module.exports = {
     host: process.env.REDIS_HOST || process.env.OPENSHIFT_REDIS_HOST || "ec2-54-83-207-91.compute-1.amazonaws.com" || "localhost",
     port: process.env.REDIS_PORT || process.env.OPENSHIFT_REDIS_PORT || 18059 || 6379,
     database: parseInt(process.env.REDIS_DATABASE) || 0,
-    password: process.env.REDIS_PASSWORD || "pdhtkg8fniaep87u0p5e1uenvoj" || "",
+    password: process.env.REDIS_PASSWORD || "",
   },
   log: {
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
