@@ -3,12 +3,10 @@
 /**
  * Module dependencies.
  */
-var path = require('path');
-
-console.log("Path Resolve: " + path.resolve('./modules/inventoryItems/server/policies/inventoryItems.server.policy'));
-
-var  inventoryItemsPolicy = require(path.resolve('./modules/inventoryItems/server/policies/inventoryItems.server.policy')),
+var path = require('path'),
+  inventoryItemsPolicy = require('../policies/inventoryItems.server.policy'),
   inventoryItems = require(path.resolve('./modules/inventoryItems/server/controllers/inventoryItems.server.controller'));
+
 
 module.exports = function(app) {
 
