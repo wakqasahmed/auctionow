@@ -8,6 +8,8 @@ var path = require('path'),
   inventoryItems = require(path.resolve('./modules/inventoryItems/server/controllers/inventoryItems.server.controller'));
 
 
+console.log("Path Resolve: " + path.resolve('./modules/inventoryItems/server/policies/inventoryItems.server.policy'));
+
 module.exports = function(app) {
 
   // Articles collection routes
