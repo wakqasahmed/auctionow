@@ -13,28 +13,28 @@ angular.module('inventoryItems').config(['$stateProvider',
       })
       .state('inventoryItems.list', {
         url: '',
-        templateUrl: 'modules/inventoryItems/client/views/list-inventoryItems.client.view.html',
+        templateUrl: 'modules/inventory-items/client/views/list-inventory-items.client.view.html',
         data: {
           roles: ['user', 'admin']
         }        
       })
       .state('inventoryItems.create', {
         url: '/create',
-        templateUrl: 'modules/inventoryItems/client/views/create-inventoryItem.client.view.html',
+        templateUrl: 'modules/inventory-items/client/views/create-inventory-item.client.view.html',
         data: {
           roles: ['user', 'admin']
         }
       })
       .state('inventoryItems.view', {
         url: '/:inventoryItemId',
-        templateUrl: 'modules/inventoryItems/client/views/view-inventoryItem.client.view.html',
+        templateUrl: 'modules/inventory-items/client/views/view-inventory-item.client.view.html',
         data: {
           roles: ['user', 'admin']
         }        
       })
       .state('inventoryItems.edit', {
         url: '/:inventoryItemId/edit',
-        templateUrl: 'modules/inventoryItems/client/views/edit-inventoryItem.client.view.html',
+        templateUrl: 'modules/inventory-items/client/views/edit-inventory-item.client.view.html',
         data: {
           roles: ['user', 'admin']
         }
