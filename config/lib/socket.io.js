@@ -67,10 +67,11 @@ module.exports = function(app, db) {
     pass: config.redis.password || ''
   });
 
-console.log("From SocketIO REDIS Host" + config.redis.host);
-console.log("REDIS Port" + config.redis.port);
-console.log("REDIS DB" + config.redis.database);
-console.log("REDIS Pass" + config.redis.password);
+console.log("From SocketIO REDIS Host: " + config.redis.host);
+console.log("REDIS Port: " + config.redis.port);
+console.log("REDIS DB: " + config.redis.database);
+console.log("REDIS Pass: " + config.redis.password);  
+console.log("REDIS Config From: " + config.redis.configFrom);
 
   // Intercept Socket.io's handshake request
   io.use(function(socket, next) {

@@ -158,10 +158,11 @@ module.exports.initSession = function(app, db) {
     })
   }));
 
-console.log("From expressjs REDIS Host" + config.redis.host);
-console.log("REDIS Port" + config.redis.port);
-console.log("REDIS DB" + config.redis.database);
-console.log("REDIS Pass" + config.redis.password);  
+console.log("From expressjs REDIS Host: " + config.redis.host);
+console.log("REDIS Port: " + config.redis.port);
+console.log("REDIS DB: " + config.redis.database);
+console.log("REDIS Pass: " + config.redis.password);  
+console.log("REDIS Config From: " + config.redis.configFrom);
 };
 
 /**

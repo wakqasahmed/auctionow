@@ -23,6 +23,7 @@ module.exports = {
     port: process.env.REDIS_PORT || process.env.OPENSHIFT_REDIS_PORT || 6379,
     database: parseInt(process.env.REDIS_DATABASE) || 0,
     password: "" || process.env.REDIS_PASSWORD,
+    configFrom: "Production Waqas"
   },
   log: {
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'

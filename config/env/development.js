@@ -28,6 +28,7 @@ module.exports = {
     port: process.env.REDIS_PORT || 6379,
     database: process.env.REDIS_DATABASE || 0,
     password: process.env.REDIS_PASSWORD || "",
+    configFrom: "Development Waqas"    
   },
   log: {
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
