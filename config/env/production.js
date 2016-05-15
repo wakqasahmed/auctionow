@@ -19,10 +19,10 @@ module.exports = {
     sync: process.env.DB_SYNC || false //Synchronizing any model changes with database
   },
   redis: {
-    host: "pub-redis-18761.us-east-1-1.1.ec2.garantiadata.com" || "ec2-54-83-207-91.compute-1.amazonaws.com" || "localhost",
-    port: 18761 || 18059 || 6379,
-    database: 0,
-    password: "in84IWUX66Sr1F2w" || "pdhtkg8fniaep87u0p5e1uenvoj",
+    host: process.env.REDIS_HOST || process.env.OPENSHIFT_REDIS_HOST || "localhost",
+    port: process.env.REDIS_PORT || process.env.OPENSHIFT_REDIS_PORT || 6379,
+    database: parseInt(process.env.REDIS_DATABASE) || 0,
+    password: process.env.REDIS_PASSWORD || "",
   },
   log: {
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
