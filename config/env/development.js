@@ -24,9 +24,9 @@ module.exports = {
     }
   },
   redis: {
-    host: process.env.REDIS_HOST || "localhost",
-    port: process.env.REDIS_PORT || 6379,
-    database: process.env.REDIS_DATABASE || 0,
+    host: process.env.REDIS_HOST || process.env.OPENSHIFT_REDIS_HOST || "localhost",
+    port: process.env.REDIS_PORT || process.env.OPENSHIFT_REDIS_PORT || 6379,
+    database: parseInt(process.env.REDIS_DATABASE) || 0,
     password: process.env.REDIS_PASSWORD || "",
     configFrom: "Development Waqas"    
   },

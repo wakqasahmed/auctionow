@@ -16,9 +16,9 @@
   },
   "main": "start.js",
   "scripts": {
-    "start": "grunt",
+    "start": "grunt prod",
     "test": "grunt test",
-    "postinstall": "bower install --config.interactive=false"
+    "postinstall": "npm install --dev && bower install --config.interactive=false"
   },
   "dependencies": {
     "acl": "~0.4.4",
