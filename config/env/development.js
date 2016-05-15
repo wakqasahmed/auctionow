@@ -10,24 +10,24 @@ module.exports = {
   },
   db: {
     name: process.env.DB_NAME || "seanjs_dev",
-    host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT || 5432,
-    username: process.env.DB_USERNAME || "postgres",
-    password: process.env.DB_PASSWORD || "postgres",
+    host: process.env.OPENSHIFT_POSTGRESQL_DB_HOST || process.env.DB_HOST || "localhost",
+    port: process.env.OPENSHIFT_POSTGRESQL_DB_PORT || process.env.DB_PORT || 5432,
+    username: process.env.OPENSHIFT_POSTGRESQL_DB_USERNAME || process.env.DB_USERNAME || "postgres",
+    password: process.env.OPENSHIFT_POSTGRESQL_DB_PASSWORD || process.env.DB_PASSWORD || "postgres",
     dialect: process.env.DB_DIALECT || "postgres", //mysql, postgres, sqlite3,...
     enableSequelizeLog: process.env.DB_LOG || false,
     ssl: process.env.DB_SSL || false,
-    sync: process.env.DB_SYNC || true, //Synchronizing any model changes with database
+    sync: process.env.DB_SYNC || false, //Synchronizing any model changes with database
     "pool": {
       "maxConnections": 100,
       "maxIdleTime": 1000
     }
   },
   redis: {
-    host: process.env.REDIS_HOST || process.env.OPENSHIFT_REDIS_HOST || "localhost",
-    port: process.env.REDIS_PORT || process.env.OPENSHIFT_REDIS_PORT || 6379,
+    host: process.env.OPENSHIFT_REDIS_HOST ||  "ec2-54-83-207-91.compute-1.amazonaws.com" || process.env.REDIS_HOST || "localhost",
+    port: process.env.OPENSHIFT_REDIS_PORT ||  18059 || process.env.REDIS_PORT || 6379,
     database: parseInt(process.env.REDIS_DATABASE) || 0,
-    password: process.env.REDIS_PASSWORD || "",
+    password: process.env.REDIS_PASSWORD || "pdhtkg8fniaep87u0p5e1uenvoj" || "",
     configFrom: "Development Waqas"    
   },
   log: {
