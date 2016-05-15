@@ -19,10 +19,10 @@ module.exports = {
     sync: process.env.DB_SYNC || false //Synchronizing any model changes with database
   },
   redis: {
-    host: process.env.OPENSHIFT_REDIS_HOST || "pub-redis-18761.us-east-1-1.1.ec2.garantiadata.com" || "ec2-54-83-207-91.compute-1.amazonaws.com" || process.env.REDIS_HOST || "localhost",
-    port: process.env.OPENSHIFT_REDIS_PORT || 18761 || 18059 || process.env.REDIS_PORT || 6379,
+    host: process.env.OPENSHIFT_REDIS_HOST ||  "ec2-54-83-207-91.compute-1.amazonaws.com" || process.env.REDIS_HOST || "localhost",
+    port: process.env.OPENSHIFT_REDIS_PORT ||  18059 || process.env.REDIS_PORT || 6379,
     database: parseInt(process.env.REDIS_DATABASE) || 0,
-    password: process.env.REDIS_PASSWORD || "in84IWUX66Sr1F2w" || "pdhtkg8fniaep87u0p5e1uenvoj" || "",
+    password: process.env.REDIS_PASSWORD || "pdhtkg8fniaep87u0p5e1uenvoj" || "",
     configFrom: "Production Waqas"
   },
   log: {
