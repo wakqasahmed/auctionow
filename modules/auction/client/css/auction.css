@@ -1,0 +1,14 @@
+.auction-message {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+.auction-message:not(:first-child) {
+  border-top: 1px solid #e7e7e7;
+}
+.auction-message-details {
+  margin-left: 10px;
+}
+.auction-profile-image {
+  height: 28px;
+  width: 28px;
+}
