@@ -28,7 +28,7 @@ module.exports = {
     port: process.env.OPENSHIFT_REDIS_PORT ||  18059 || process.env.REDIS_PORT || 6379,
     database: parseInt(process.env.REDIS_DATABASE) || 0,
     password: process.env.REDIS_PASSWORD || "pdhtkg8fniaep87u0p5e1uenvoj" || "",
-    configFrom: "Development Waqas"    
+    configFrom: "Development Waqas"
   },
   log: {
     // Can specify one of 'combined', 'common', 'dev', 'short', 'tiny'
@@ -83,5 +83,5 @@ module.exports = {
       }
     }
   },
-  livereload: true
+  livereload: false
 };

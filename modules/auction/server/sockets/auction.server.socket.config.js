@@ -1,6 +1,6 @@
 'use strict';
 
-const ntpsync = require('ntpsync');
+// const ntpsync = require('ntpsync');
 
 // Create the auction configuration
 module.exports = function(io, socket) {
